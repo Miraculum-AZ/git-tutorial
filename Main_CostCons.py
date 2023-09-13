@@ -105,6 +105,7 @@ class MainControl():
         self.last_month =  (datetime.today().replace(day=1) - timedelta(days=1)).strftime("%#m")
 
     def __repr__(self) -> str: # how our control is seen for the users, who print it (more official)
+        print("Some test here")
         return (f"Control on {self.curr_user} machine") # an instance of this class will have this text if printed
     
     def __str__(self) -> str: # how our control is seen for the users, who print it (more user-friendly)
