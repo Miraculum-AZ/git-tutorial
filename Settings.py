@@ -1,0 +1,8 @@
+# define color settings for the GUI
+
+INVALID = "#8f0b26"
+ENTRY_NORMAL = "#344739"
+LABEL_FG = "#577860"
+TEXT_NORMAL = "#FFFFFF"
+BUTTON_HOVER = "#4c6b54"
+BUTTON_BORDER = "#45634d"

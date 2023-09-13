@@ -1,0 +1,16 @@
+{
+  "folders": [
+	{
+		"path": "../../../Python_Main/Other/JS/live-vanilla-build"
+	},
+	{
+		"path": "../../../Python_Main/Other/JS/live-ts-refactor"
+	},
+	{
+		"path": "../../../Python_Main/Other/JS/React"
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "React"
+  }
+}
