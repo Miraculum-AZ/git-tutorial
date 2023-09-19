@@ -211,7 +211,7 @@ class MainControl():
     def send_email(self, subject:str = "Automatic email", body:str="Please consult the attachment"):
         '''Send email'''
         self.subject = subject
-        self.body = body
+        self.body = body # define email body
         # send by email
         self.outlook = win32.Dispatch('outlook.application')
         self.mail = self.outlook.CreateItem(0)
