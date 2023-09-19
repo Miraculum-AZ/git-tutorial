@@ -7,7 +7,7 @@ import time
 from datetime import date, timedelta, datetime, timezone
 import pyautogui
 import pandas as pd
-import numpy as np
+import numpy as np # hhkdjhgkd
 from functools import wraps
 import logging # custom logging created
 from pathlib import Path # working with / // or \
