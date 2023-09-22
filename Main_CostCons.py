@@ -99,6 +99,7 @@ class MainControl():
         self.period = date.today().strftime("%#m") # use # to remove a leading 0 -> result 7 and not 07, 8 and not 08
         self.period_0 = date.today().strftime("%m") # print with leading 0 -> 07, 08, etc.
         self.year = datetime.today().year # get current year
+        print("Another foolish comment")
             # Additional dates
         self.last_month_last_day = (datetime.today().replace(day=1) - timedelta(days=1)).strftime("%d.%m.%Y")
         self.last_month_first_day = (datetime.today().replace(day=1) - timedelta(days=1)).replace(day=1).strftime("%d.%m.%Y")
