@@ -282,9 +282,9 @@ class Cost_consistency(MainControl):
     @MainControl.timer_decorator
     def __call__(self, *args, **kwargs):
         self.run_logic_sap_zm2d_28(self.t_code_sap) # extract zm2d_28 from SAP
-        #self.run_logic_excel() # paste hictorical cost and zm2d_28 in Excel, add screenshots
-        #self.run_logic_excel_part_2() # final part of working with mb51 excel and main file 
-        #close_excel()
+        self.run_logic_excel() # paste hictorical cost and zm2d_28 in Excel, add screenshots
+        self.run_logic_excel_part_2() # final part of working with mb51 excel and main file 
+        close_excel()
         x = 1+1
 
     @MainControl.timer_decorator
@@ -310,26 +310,14 @@ class Cost_consistency(MainControl):
             time.sleep(3)
             self.take_screenshot(name=f"scr2_for_{self.extract_name_zm2d_28[:-5]}", path=self.screenshots_path) # last page
             sap_extract(session=self.session, extr_path=self.extract_path_zm2d_28, extr_name=self.extract_name_zm2d_28)
-        # return to default
             close_excel() # close excel
         
     @MainControl.timer_decorator
     @MainControl.excel_decorator
     def run_logic_excel(self):
-        # copy model file
-        try:
-            shutil.copy(self.model_file_path, self.new_file_path)
-        except PermissionError as e:
-            print("The file may be opened")
-            os.system("taskkill /f /im  excel.exe")
-    
+        self.copy_file(file_from=self.model_file_path, file_to=self.new_file_path) # copy model file
     # working with historical cost file
-        # copy historical cost file
-        try:
-            shutil.copy(self.final_joined_path_to_historical_cost, self.new_file_path_to_historical_cost)
-        except PermissionError as e:
-            print("Historical file is either unreachable, missing or opened")
-            os.system("taskkill /f /im  excel.exe")
+        self.copy_file(file_from=self.final_joined_path_to_historical_cost, file_to=self.new_file_path_to_historical_cost) # copy historical cost file
         # open created Excel file and perform the following manipulations
             # open new file and disable calculations
         self.new_file = self.excel.Workbooks.Open(self.new_file_path) # main file
@@ -375,21 +363,21 @@ class Cost_consistency(MainControl):
                     #1
                 #C:/Users/{self.curr_user}/Desktop/Automations/CPT_TP/Cost_consistency/Screenshots/scr2_for_{self.extract_name_zm2d_28[:-5]}.png'
                 self.picture_filename = f'scr1_for_{self.extract_name_zm2d_28[:-5]}.png'
-                self.picture_path = fr'C:\\Users\\{self.curr_user}\\Desktop\\Automations\\CPT_TP\\Cost_consistency\\Screenshots\\{self.picture_filename}'
+                self.picture_path = f'{self.screenshots_path}/{self.picture_filename}'
                 # insert a new screenshot with given parameters
                 self.left, self.top, self.width, self.height = 0, 15, 950, 640
                 self.picture = self.new_file_screenshots_ws.Shapes.AddPicture(self.picture_path, LinkToFile=False, SaveWithDocument=True, Left=self.left, Top=self.top, Width=self.width, Height=self.height)
                     #2
                 self.picture_filename = f'scr2_for_{self.extract_name_zm2d_28[:-5]}.png'
-                self.picture_path = fr'C:\\Users\\{self.curr_user}\\Desktop\\Automations\\CPT_TP\\Cost_consistency\\Screenshots\\{self.picture_filename}'
+                self.picture_path = f'{self.screenshots_path}/{self.picture_filename}'
                 # insert a new screenshot with given parameters
                 self.left, self.top, self.width, self.height = 950, 15, 950, 640
                 self.picture = self.new_file_screenshots_ws.Shapes.AddPicture(self.picture_path, LinkToFile=False, SaveWithDocument=True, Left=self.left, Top=self.top, Width=self.width, Height=self.height)
             except Exception as e:
-                print(f"No screenshot or {e}")
+                self.main_logger.log(level=logging.ERROR, message=f"No screenshot or {e}")
             self.new_file.Save() # save main Excel file
         except Exception as e:
-            print(f"Something happened while copying ZM2D_28, namely {e}")
+            self.main_logger.log(level=logging.ERROR, message=f"Something happened while copying ZM2D_28, namely {e}")
             self.new_file.Save()
         '''# copy to and from the clipboard -> nice but probably not the best    
             # materials
@@ -438,18 +426,18 @@ class Cost_consistency(MainControl):
                 #1
             #C:/Users/{self.curr_user}/Desktop/Automations/CPT_TP/Cost_consistency/Screenshots/scr2_for_{self.extract_name_zm2d_28[:-5]}.png'
             self.picture_filename = f'scr1_for_mb51_{self.date_stamp}.png'
-            self.picture_path = fr'C:\\Users\\{self.curr_user}\\Desktop\\Automations\\CPT_TP\\Cost_consistency\\Screenshots\\{self.picture_filename}'
+            self.picture_path = f'{self.screenshots_path}/{self.picture_filename}'
             # insert a new screenshot with given parameters
             self.left, self.top, self.width, self.height = 0, 640, 950, 640
             self.picture = self.new_file_screenshots_ws.Shapes.AddPicture(self.picture_path, LinkToFile=False, SaveWithDocument=True, Left=self.left, Top=self.top, Width=self.width, Height=self.height)
                 #2
             self.picture_filename = f'scr2_for_mb51_{self.date_stamp}.png'
-            self.picture_path = fr'C:\\Users\\{self.curr_user}\\Desktop\\Automations\\CPT_TP\\Cost_consistency\\Screenshots\\{self.picture_filename}'
+            self.picture_path = f'{self.screenshots_path}/{self.picture_filename}'
             # insert a new screenshot with given parameters
             self.left, self.top, self.width, self.height = 950, 640, 950, 640
             self.picture = self.new_file_screenshots_ws.Shapes.AddPicture(self.picture_path, LinkToFile=False, SaveWithDocument=True, Left=self.left, Top=self.top, Width=self.width, Height=self.height)
         except Exception as e:
-            print(f"No screenshot or {e}")
+            self.main_logger.log(level=logging.ERROR, message=f"No screenshot or {e}")
         self.new_file.Save() # save main Excel file
         # back to default
         self.excel.ScreenUpdating = True
