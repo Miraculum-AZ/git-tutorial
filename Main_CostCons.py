@@ -471,17 +471,11 @@ class Cost_consistency(MainControl):
         sap_screen_nagivation(session=self.session, action="up")
         #self.session.findById("wnd[0]/usr/lbl[1,1]").setFocus() # ensure report is loaded
             #scr1
-        try: # first page
-            screenshot_first_page_mb51 = pyautogui.screenshot()
-            screenshot_first_page_mb51.save(fr'C:/Users/{self.curr_user}/Desktop/Automations/CPT_TP/Cost_consistency/Screenshots/scr1_for_mb51_{self.date_stamp}.png')
-        except Exception as e: print(e)
+        self.take_screenshot(name=f"scr1_for_mb51_{self.date_stamp}", path=self.screenshots_path)
         sap_screen_nagivation(session=self.session, action="down")
         time.sleep(2)
             #scr2
-        try: # last page
-            screenshot_last_page_mb51 = pyautogui.screenshot()
-            screenshot_last_page_mb51.save(fr'C:/Users/{self.curr_user}/Desktop/Automations/CPT_TP/Cost_consistency/Screenshots/scr2_for_mb51_{self.date_stamp}.png')
-        except Exception as e: print(e)
+        self.take_screenshot(name=f"scr2_for_mb51_{self.date_stamp}", path=self.screenshots_path)
         self.session.findById("wnd[0]/tbar[1]/btn[48]").press() # change the layout
         sap_extract(session=self.session, extr_path=self.extract_path_mb51, extr_name=self.extract_name_mb51) #extract the report
         close_excel()
