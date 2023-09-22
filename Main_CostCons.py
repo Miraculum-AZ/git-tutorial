@@ -246,7 +246,7 @@ class Cost_consistency(MainControl):
         self.main_logger = MyLogger(self.log_file_path)
         self.main_logger.log(level=logging.INFO, message="Class instantiated")
 
-        # SAP variables S_PL0_xxx
+        # SAP variables ZM2D_28
         self.t_code_sap = "ZM2D_28"
         self.variant_sap = "COST_CONS_AUTO"
         self.layout_sap = "CC_AUTO"
@@ -279,18 +279,12 @@ class Cost_consistency(MainControl):
                 # same but on my local drive
         self.new_file_path_to_historical_cost = str(Path(f"{self.output_path}/{self.historical_cost_file}"))
 
-	# alternative way to instantiate the class (alternative constructor)
-    @classmethod
-    def from_string(cls, string):
-        one, two, three = string.split("-")
-        return cls()
-
     @MainControl.timer_decorator
     def __call__(self, *args, **kwargs):
         self.run_logic_sap_zm2d_28(self.t_code_sap) # extract zm2d_28 from SAP
-        self.run_logic_excel() # paste hictorical cost and zm2d_28 in Excel, add screenshots
-        self.run_logic_excel_part_2() # final part of working with mb51 excel and main file 
-        close_excel()
+        #self.run_logic_excel() # paste hictorical cost and zm2d_28 in Excel, add screenshots
+        #self.run_logic_excel_part_2() # final part of working with mb51 excel and main file 
+        #close_excel()
         x = 1+1
 
     @MainControl.timer_decorator
@@ -311,16 +305,10 @@ class Cost_consistency(MainControl):
             self.session.findById("wnd[0]/usr/cntlCONTAINER/shellcont/shell").pressToolbarContextButton("&MB_VIEW")
             self.session.findById("wnd[0]/usr/cntlCONTAINER/shellcont/shell").selectContextMenuItem("&PRINT_BACK_PREVIEW")
             self.session.findById("wnd[0]/usr/lbl[12,6]").setFocus() # just in case
-            try: # first page
-                screenshot_first_page_zm2d_28 = pyautogui.screenshot()
-                screenshot_first_page_zm2d_28.save(fr'C:/Users/{self.curr_user}/Desktop/Automations/CPT_TP/Cost_consistency/Screenshots/scr1_for_{self.extract_name_zm2d_28[:-5]}.png')
-            except Exception as e: print(e)
+            self.take_screenshot(name=f"scr1_for_{self.extract_name_zm2d_28[:-5]}", path=self.screenshots_path) # first page
             sap_screen_nagivation(session=self.session, action="down")
-            try: # last page
-                time.sleep(3)
-                screenshot_second_page_zm2d_28 = pyautogui.screenshot()
-                screenshot_second_page_zm2d_28.save(fr'C:/Users/{self.curr_user}/Desktop/Automations/CPT_TP/Cost_consistency/Screenshots/scr2_for_{self.extract_name_zm2d_28[:-5]}.png')
-            except Exception as e: print(e)
+            time.sleep(3)
+            self.take_screenshot(name=f"scr2_for_{self.extract_name_zm2d_28[:-5]}", path=self.screenshots_path) # last page
             sap_extract(session=self.session, extr_path=self.extract_path_zm2d_28, extr_name=self.extract_name_zm2d_28)
         # return to default
             close_excel() # close excel
