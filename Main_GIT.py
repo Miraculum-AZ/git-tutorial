@@ -7,7 +7,7 @@ import time
 from datetime import date, timedelta, datetime, timezone
 import pyautogui
 import pandas as pd
-import numpy as np # hhkdjhgkd
+import numpy as np 
 from functools import wraps
 import logging # custom logging created
 from pathlib import Path # working with / // or \
@@ -270,6 +270,9 @@ class GIT(MainControl):
         self.final_path_to_historical_cost = f"S:/Robotics_COE_Prod/RPA/MM60/Outputs/{self.year}/{self.period_0}/"
         self.historical_cost_file = f"Historical cost AP{self.period_0} LE2941.xlsm"
         self.final_joined_path_to_historical_cost = str(Path(f"{self.final_path_to_historical_cost}{self.historical_cost_file}"))
+            # alternative path to historical cost file
+        self.final_path_to_historical_cost_alt = f"S:/Robotics_COE_Prod/RPA/MM60/Outputs/{self.year}/{str(int(self.period_0) - 1).zfill(2)}/" # ensure there are two digits
+        self.final_joined_path_to_historical_cost_alt = str(Path(f"{self.final_path_to_historical_cost_alt}{self.historical_cost_file}"))
                 # same but on my local drive
         self.new_file_path_to_historical_cost = str(Path(f"{self.output_path}/{self.historical_cost_file}"))
             # screenshots
@@ -288,8 +291,8 @@ class GIT(MainControl):
 
     @MainControl.timer_decorator
     def __call__(self, *args, **kwargs):
-        self.run_logic_sap_spool(self.t_code_sap_spool) # this function will extract spool from SAP
-        self.run_logic_sap_SP(self.t_code_sap) # this function will perform S_PL0_86000030 part, extracting the file before saving it with a timestamp
+        #self.run_logic_sap_spool(self.t_code_sap_spool) # this function will extract spool from SAP
+        #self.run_logic_sap_SP(self.t_code_sap) # this function will perform S_PL0_86000030 part, extracting the file before saving it with a timestamp
         self.sap_faglb03(self.t_code_sap_faglb03)
         self.run_logic_HC() # extract historical cost file from PRA folder 
         self.create_final_file()
@@ -418,7 +421,10 @@ class GIT(MainControl):
         # copy model file
         self.copy_file(self.model_file_path, self.new_file_path)
         # copying hc file
-        self.copy_file(self.final_joined_path_to_historical_cost, self.new_file_path_to_historical_cost)
+        try:
+            self.copy_file(self.final_joined_path_to_historical_cost, self.new_file_path_to_historical_cost)
+        except:
+            self.copy_file(self.final_joined_path_to_historical_cost_alt, self.new_file_path_to_historical_cost)
 
     @MainControl.timer_decorator
     @MainControl.sap_decorator

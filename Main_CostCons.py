@@ -276,6 +276,9 @@ class Cost_consistency(MainControl):
         self.final_path_to_historical_cost = f"S:/Robotics_COE_Prod/RPA/MM60/Outputs/{self.year}/{self.period_0}/"
         self.historical_cost_file = f"Historical cost AP{self.period_0} LE2941.xlsm"
         self.final_joined_path_to_historical_cost = str(Path(f"{self.final_path_to_historical_cost}{self.historical_cost_file}"))
+        # alternative path to historical cost file
+        self.final_path_to_historical_cost_alt = f"S:/Robotics_COE_Prod/RPA/MM60/Outputs/{self.year}/{str(int(self.period_0) - 1).zfill(2)}/" # ensure there are two digits
+        self.final_joined_path_to_historical_cost_alt = str(Path(f"{self.final_path_to_historical_cost_alt}{self.historical_cost_file}"))
                 # same but on my local drive
         self.new_file_path_to_historical_cost = str(Path(f"{self.output_path}/{self.historical_cost_file}"))
 
@@ -317,7 +320,10 @@ class Cost_consistency(MainControl):
     def run_logic_excel(self):
         self.copy_file(file_from=self.model_file_path, file_to=self.new_file_path) # copy model file
     # working with historical cost file
-        self.copy_file(file_from=self.final_joined_path_to_historical_cost, file_to=self.new_file_path_to_historical_cost) # copy historical cost file
+        try:
+            self.copy_file(file_from=self.final_joined_path_to_historical_cost, file_to=self.new_file_path_to_historical_cost) # copy historical cost file
+        except:
+            self.copy_file(file_from=self.final_joined_path_to_historical_cost_alt, file_to=self.new_file_path_to_historical_cost) # copy historical cost file
         # open created Excel file and perform the following manipulations
             # open new file and disable calculations
         self.new_file = self.excel.Workbooks.Open(self.new_file_path) # main file
@@ -479,6 +485,70 @@ class Cost_consistency(MainControl):
         self.session.findById("wnd[0]/tbar[1]/btn[48]").press() # change the layout
         sap_extract(session=self.session, extr_path=self.extract_path_mb51, extr_name=self.extract_name_mb51) #extract the report
         close_excel()
+
+
+class CreateToolTip(object):
+    import customtkinter as ctk
+    """
+    create a tooltip for a given widget
+    """
+    def __init__(self, widget, text='widget info'):
+        self.waittime = 500     #miliseconds
+        self.wraplength = 180   #pixels
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+        self.id = None
+        self.tw = None
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = y = 0
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() + 20
+        # creates a toplevel window
+        self.tw = ctk.Toplevel(self.widget)
+        # Leaves only the label and removes the app window
+        self.tw.wm_overrideredirect(True)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+        label = ctk.Label(self.tw, text=self.text, justify='left',
+                       background="#ffffff", relief='solid', borderwidth=1,
+                       wraplength = self.wraplength)
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tw
+        self.tw= None
+        if tw:
+            tw.destroy()
+
+# import tkinter as tk
+# from idlelib.tooltip import Hovertip
+    
+# app = tk.Tk()
+# myBtn = tk.Button(app,text='?')
+# myBtn.pack(pady=30)
+# myTip = Hovertip(myBtn,'This is \na multiline tooltip.')
+# app.mainloop()
 
 if __name__ == "__main__": 
     control = Cost_consistency()
