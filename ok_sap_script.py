@@ -161,7 +161,7 @@ def sap_extract_txt (session, extr_path: str, extr_name: str) -> str:
         session.findById("wnd[1]/tbar[0]/btn[11]").press() # replace existing report
     return msg
 
-def sap_enter_spool (session, job_name: str ="*", sap_user_name: str ="*", from_spool =date.today().strftime("%d.%m.%Y"), to_spool =date.today().strftime("%d.%m.%Y"), abap_prog_name: str="*", number_hits: str="100000"):
+def sap_enter_spool (session, job_name: str ="*", sap_user_name: str ="*", from_spool =date.today().strftime("01.%m.%Y"), to_spool =date.today().strftime("%d.%m.%Y"), abap_prog_name: str="*", number_hits: str="100000"):
     '''
     Most variables have default values\n
     Works if you only have 1 single spool output
